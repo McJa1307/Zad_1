@@ -9,6 +9,10 @@
 #include <sstream>
 #include <math.h>
 
+#define TRUE true
+#define FALSE false
+//bo dużymi literami jest ładniej
+
 using namespace std;
 
 double ipow(double base, int exp)
@@ -26,87 +30,54 @@ double ipow(double base, int exp)
 	return result;
 }
 
+double convert_symbol_to_zeros(string symbol)
+{
+	if		(symbol == "M")		return  6;
+	else if (symbol == "B")		return  9;
+	else if (symbol == "T")		return 12;
+	else if (symbol == "Qa")	return 15;
+	else if (symbol == "Qi")	return 18;
+	else if (symbol == "Sx")	return 21;
+	else if (symbol == "Sp")	return 24;
+	else if (symbol == "Oc")	return 27;
+	else						return  0;
+}
+
 string ConvertFromSymbolic(string str)
 {
-	string str1;
-	string str2;
-	string output;
+	string number_part;
+	string symbol_part;
 
-	bool more_digits = false;
+	bool more_digits = TRUE;
 
 	for (int i = 0; i < str.length(); i++)
 	{
 
-		if (isdigit(str[i]) && !more_digits)
+		if (isdigit(str[i]) && more_digits)
 		{
-			str1 += str[i];
+			number_part += str[i];
 		}
 		else
 		{
 			if (i != 0)
 			{
-				if (str[i] == '.' && !more_digits)
+				if (str[i] == '.' && more_digits)
 				{
-					str1 += str[i];
+					number_part += str[i];
 				}
 				else
 				{
-					str2 += str[i];
-					more_digits = true;
+					symbol_part += str[i];
+					more_digits = FALSE;
 				}
 
 			}
 		}
 	}
 
-	double int1 = stod(str1);
+	double int1 = stod(number_part);
 
-
-	if (str2 == "M")
-	{
-		output = to_string((double)(int1 * ipow(10, 6)));
-		return output;
-	}
-	else if (str2 == "B")
-	{
-		output = to_string((double)(int1 * ipow(10, 9)));
-		return output;
-	}
-	else if (str2 == "T")
-	{
-		output = to_string((double)(int1 * ipow(10, 12)));
-		return output;
-	}
-	else if (str2 == "Qa")
-	{
-		output = to_string((double)(int1 * ipow(10, 12))) + to_string(ipow(10, 3)).erase(0, 1);
-		return output;
-	}
-	else if (str2 == "Qi")
-	{
-		output = to_string((double)(int1 * ipow(10, 12))) + to_string(ipow(10, 6)).erase(0, 1);
-		return output;
-	}
-	else if (str2 == "Sx")
-	{
-		output = to_string((double)(int1 * ipow(10, 12))) + to_string(ipow(10, 9)).erase(0, 1);
-		return output;
-	}
-	else if (str2 == "Sp")
-	{
-		output = to_string((double)(int1 * ipow(10, 12))) + to_string(ipow(10, 12)).erase(0, 1);
-		return output;
-	}
-	else if (str2 == "Oc")
-	{
-		output = to_string((double)(int1 * ipow(10, 12))) + to_string(ipow(10, 16)).erase(0, 1);
-		return output;
-	}
-	else
-	{
-		return 0;
-	}
-
+	return "";
 }
 
 int main()
@@ -116,7 +87,6 @@ int main()
 	cout << (ConvertFromSymbolic("5.434B")) << endl;
 	cout << (ConvertFromSymbolic("84340000Oc")) << endl;
 	cout << (ConvertFromSymbolic("943400000Oc")) << endl;
-
 
 
 	return 1;
