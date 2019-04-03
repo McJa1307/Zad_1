@@ -87,30 +87,52 @@ string ConvertFromSymbolic(string str)
 		}
 	}
 
-	double number = stod(number_part);
-	int zeros = static_cast<int>(convert_symbol_to_zeros(symbol_part));
-	int dot_pos = get_dot_pos(str);
+	int zeros = convert_symbol_to_zeros(symbol_part);
+	int dot_pos = get_dot_pos(number_part);
+	int fraction_part_len = get_fraction_part_len(number_part, dot_pos);
 
 	string output = "";
 
-	if (dot_pos > -1)
+	if (fraction_part_len > 0)
 	{
-
+		if (zeros >= fraction_part_len)
+		{
+			output = number_part.erase(dot_pos, 1);
+			zeros -= fraction_part_len;
+		}
+		else
+		{
+			output = number_part.erase(dot_pos, 1).insert(dot_pos+zeros, ".");
+			zeros = 0;
+		}
+	}
+	else if(fraction_part_len == 0)
+	{
+		output = number_part.erase(dot_pos, 1);
+	}
+	else
+	{
+		output = number_part;
 	}
 
 	for (int i = zeros; i > 0; i--)
 	{
-
+		output += "0";
 	}
 
-	return "";
+	return output;
 }
 
 int main()
 {
+	cout << (ConvertFromSymbolic("4.2222222M")) << endl;
+	cout << (ConvertFromSymbolic("4.222222222222M")) << endl;
+	cout << (ConvertFromSymbolic("4.222222M")) << endl;
+	cout << (ConvertFromSymbolic("4.222M")) << endl;
 	cout << (ConvertFromSymbolic("4M")) << endl;
 	cout << (ConvertFromSymbolic("54T")) << endl;
 	cout << (ConvertFromSymbolic("5.434B")) << endl;
+	cout << (ConvertFromSymbolic("1Oc")) << endl;
 	cout << (ConvertFromSymbolic("84340000Oc")) << endl;
 	cout << (ConvertFromSymbolic("943400000Oc")) << endl;
 }
