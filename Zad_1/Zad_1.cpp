@@ -43,6 +43,18 @@ double convert_symbol_to_zeros(string symbol)
 	else						return  0;
 }
 
+int get_dot_pos(string input)
+{
+	size_t index = input.find('.');
+	return static_cast<int>(index);
+}
+
+int get_fraction_part_len(string input, int dot_pos)
+{
+	if (dot_pos == -1) return -1;
+	return (static_cast<int>(input.length()) - (dot_pos + 1));
+}
+
 string ConvertFromSymbolic(string str)
 {
 	string number_part;
@@ -75,7 +87,21 @@ string ConvertFromSymbolic(string str)
 		}
 	}
 
-	double int1 = stod(number_part);
+	double number = stod(number_part);
+	int zeros = static_cast<int>(convert_symbol_to_zeros(symbol_part));
+	int dot_pos = get_dot_pos(str);
+
+	string output = "";
+
+	if (dot_pos > -1)
+	{
+
+	}
+
+	for (int i = zeros; i > 0; i--)
+	{
+
+	}
 
 	return "";
 }
@@ -87,9 +113,6 @@ int main()
 	cout << (ConvertFromSymbolic("5.434B")) << endl;
 	cout << (ConvertFromSymbolic("84340000Oc")) << endl;
 	cout << (ConvertFromSymbolic("943400000Oc")) << endl;
-
-
-	return 1;
 }
 
 // Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
