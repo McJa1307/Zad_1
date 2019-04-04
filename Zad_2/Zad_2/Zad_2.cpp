@@ -19,6 +19,7 @@ class Convert_from_symbolic
 
 public:
 	Convert_from_symbolic(string);
+	Convert_from_symbolic();
 	~Convert_from_symbolic();
 	string Convert(string);
 	string Convert();
@@ -34,6 +35,10 @@ private:
 Convert_from_symbolic::Convert_from_symbolic(string _input)
 {
 	input = _input;
+}
+
+Convert_from_symbolic::Convert_from_symbolic()
+{
 }
 
 Convert_from_symbolic::~Convert_from_symbolic()
@@ -211,6 +216,35 @@ string Convert_from_symbolic::Convert()
 	}
 }
 
+class Assert
+{
+public:
+	Assert();
+	~Assert();
+
+	int AreEqual(string, string);
+private:
+
+};
+
+Assert::Assert()
+{
+
+}
+
+Assert::~Assert()
+{
+
+}
+
+int Assert::AreEqual(string number, string symbol)
+{
+	Convert_from_symbolic cfs;
+	string number2 = cfs.Convert(symbol);
+
+	return number == number2 ? 1 : 0;
+}
+
 int main()
 {
 	Convert_from_symbolic cfs1("48B");
@@ -220,12 +254,19 @@ int main()
 	Convert_from_symbolic cfs3("788.42Qa");
 	cout << cfs3.Convert() << endl;
 
-	Convert_from_symbolic cfs21();
-	cout << cfs3.Convert("99Qi") << endl;
-	Convert_from_symbolic cfs22();
-	cout << cfs3.Convert("21.9990999999999999999T") << endl;
-	Convert_from_symbolic cfs23();
-	cout << cfs3.Convert("5.65M") << endl;
+	Convert_from_symbolic cfs21;
+	cout << cfs21.Convert("99Qi") << endl;
+	Convert_from_symbolic cfs22;
+	cout << cfs22.Convert("21.9990999999999999999T") << endl;
+	Convert_from_symbolic cfs23;
+	cout << cfs23.Convert("5.65M") << endl;
+
+	Assert assert;
+	cout << assert.AreEqual("48000000", "48M") << endl;
+	cout << assert.AreEqual("48000000", "48B") << endl;
+	cout << assert.AreEqual("1300000.99", "1.30000099M") << endl;
+	cout << assert.AreEqual("13", "100Qi") << endl;
+	cout << assert.AreEqual("1000000000000000000000000000", "1Oc") << endl;
 }
 
 // Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
