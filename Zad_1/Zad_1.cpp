@@ -9,6 +9,10 @@
 #include <sstream>
 #include <math.h>
 
+#define TRUE true
+#define FALSE false
+//bo dużymi literami jest ładniej
+
 using namespace std;
 
 double ipow(double base, int exp)
@@ -26,100 +30,111 @@ double ipow(double base, int exp)
 	return result;
 }
 
+double convert_symbol_to_zeros(string symbol)
+{
+	if		(symbol == "M")		return  6;
+	else if (symbol == "B")		return  9;
+	else if (symbol == "T")		return 12;
+	else if (symbol == "Qa")	return 15;
+	else if (symbol == "Qi")	return 18;
+	else if (symbol == "Sx")	return 21;
+	else if (symbol == "Sp")	return 24;
+	else if (symbol == "Oc")	return 27;
+	else						return  0;
+}
+
+int get_dot_pos(string input)
+{
+	size_t index = input.find('.');
+	return static_cast<int>(index);
+}
+
+int get_fraction_part_len(string input, int dot_pos)
+{
+	if (dot_pos == -1) return -1;
+	return (static_cast<int>(input.length()) - (dot_pos + 1));
+}
+
 string ConvertFromSymbolic(string str)
 {
-	string str1;
-	string str2;
-	string output;
+	string number_part;
+	string symbol_part;
 
-	bool more_digits = false;
+	bool more_digits = TRUE;
 
 	for (int i = 0; i < str.length(); i++)
 	{
 
-		if (isdigit(str[i]) && !more_digits)
+		if (isdigit(str[i]) && more_digits)
 		{
-			str1 += str[i];
+			number_part += str[i];
 		}
 		else
 		{
 			if (i != 0)
 			{
-				if (str[i] == '.' && !more_digits)
+				if (str[i] == '.' && more_digits)
 				{
-					str1 += str[i];
+					number_part += str[i];
 				}
 				else
 				{
-					str2 += str[i];
-					more_digits = true;
+					symbol_part += str[i];
+					more_digits = FALSE;
 				}
 
 			}
 		}
 	}
 
-	double int1 = stod(str1);
+	int zeros = convert_symbol_to_zeros(symbol_part);
+	int dot_pos = get_dot_pos(number_part);
+	int fraction_part_len = get_fraction_part_len(number_part, dot_pos);
 
+	string output = "";
 
-	if (str2 == "M")
+	if (fraction_part_len > 0)
 	{
-		output = to_string((double)(int1 * ipow(10, 6)));
-		return output;
+		if (zeros >= fraction_part_len)
+		{
+			output = number_part.erase(dot_pos, 1);
+			zeros -= fraction_part_len;
+		}
+		else
+		{
+			output = number_part.erase(dot_pos, 1).insert(dot_pos+zeros, ".");
+			zeros = 0;
+		}
 	}
-	else if (str2 == "B")
+	else if(fraction_part_len == 0)
 	{
-		output = to_string((double)(int1 * ipow(10, 9)));
-		return output;
-	}
-	else if (str2 == "T")
-	{
-		output = to_string((double)(int1 * ipow(10, 12)));
-		return output;
-	}
-	else if (str2 == "Qa")
-	{
-		output = to_string((double)(int1 * ipow(10, 12))) + to_string(ipow(10, 3)).erase(0, 1);
-		return output;
-	}
-	else if (str2 == "Qi")
-	{
-		output = to_string((double)(int1 * ipow(10, 12))) + to_string(ipow(10, 6)).erase(0, 1);
-		return output;
-	}
-	else if (str2 == "Sx")
-	{
-		output = to_string((double)(int1 * ipow(10, 12))) + to_string(ipow(10, 9)).erase(0, 1);
-		return output;
-	}
-	else if (str2 == "Sp")
-	{
-		output = to_string((double)(int1 * ipow(10, 12))) + to_string(ipow(10, 12)).erase(0, 1);
-		return output;
-	}
-	else if (str2 == "Oc")
-	{
-		output = to_string((double)(int1 * ipow(10, 12))) + to_string(ipow(10, 16)).erase(0, 1);
-		return output;
+		output = number_part.erase(dot_pos, 1);
 	}
 	else
 	{
-		return 0;
+		output = number_part;
 	}
 
+	for (int i = zeros; i > 0; i--)
+	{
+		output += "0";
+	}
+
+	return output;
 }
 
 int main()
 {
+	cout << (ConvertFromSymbolic("4.2222222M")) << endl;
+	cout << (ConvertFromSymbolic("4.222222222222M")) << endl;
+	cout << (ConvertFromSymbolic("4.222222M")) << endl;
+	cout << (ConvertFromSymbolic("4.222M")) << endl;
 	cout << (ConvertFromSymbolic("4M")) << endl;
 	cout << (ConvertFromSymbolic("54T")) << endl;
 	cout << (ConvertFromSymbolic("5.434B")) << endl;
+	cout << (ConvertFromSymbolic("1Oc")) << endl;
 	cout << (ConvertFromSymbolic("84340000Oc")) << endl;
 	cout << (ConvertFromSymbolic("943400000Oc")) << endl;
-
-
-
-	return 1;
 }
 
 // Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
